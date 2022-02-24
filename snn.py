@@ -10,9 +10,9 @@ import torch.optim as optim
 from torchvision import datasets, transforms, models
 from torch.utils.data.dataloader import DataLoader
 from torch.autograd import Variable
-from torchviz import make_dot
-from matplotlib import pyplot as plt
-from matplotlib.gridspec import GridSpec
+#from torchviz import make_dot
+#from matplotlib import pyplot as plt
+#from matplotlib.gridspec import GridSpec
 import numpy as np
 import datetime
 import time
@@ -315,7 +315,7 @@ if __name__ == '__main__':
 
     args = parser.parse_args()
     
-    os.environ['CUDA_VISIBLE_DEVICES'] = args.devices
+    #os.environ['CUDA_VISIBLE_DEVICES'] = args.devices
     
     # Seed random number
     torch.manual_seed(args.seed)
@@ -387,8 +387,8 @@ if __name__ == '__main__':
     
     # Training settings
     
-    if torch.cuda.is_available() and args.gpu:
-        torch.set_default_tensor_type('torch.cuda.FloatTensor')
+    #if torch.cuda.is_available() and args.gpu:
+    #    torch.set_default_tensor_type('torch.cuda.FloatTensor')
 
     if dataset == 'CIFAR10':
         normalize   = transforms.Normalize((0.4914, 0.4822, 0.4465), (0.2023, 0.1994, 0.2010))
