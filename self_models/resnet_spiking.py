@@ -266,7 +266,7 @@ class RESNET_SNN_STDB(nn.Module):
 		for pos in range(len(self.pre_process)):
 			if isinstance(self.pre_process[pos],nn.Conv2d):
 				if thresholds:
-					self.threshold.update({'t'+str(pos): nn.Parameter(torch.tensor(thresholds.pop(0)*self.scaling_factor)).cuda()})
+					self.threshold.update({'t'+str(pos): nn.Parameter(torch.tensor(thresholds.pop(0)*self.scaling_factor).cuda())})
 
 		pos = len(self.pre_process)
 		for i in range(1,5):
@@ -280,7 +280,7 @@ class RESNET_SNN_STDB(nn.Module):
 		for l in range(len(self.classifier)):
 			if isinstance(self.classifier[l], nn.Linear):
 				if thresholds:
-					self.threshold.update({'t'+str(pos+l): nn.Parameter(torch.tensor(thresholds.pop(0)*self.scaling_factor)).cuda()})
+					self.threshold.update({'t'+str(pos+l): nn.Parameter(torch.tensor(thresholds.pop(0)*self.scaling_factor).cuda())})
 
 		
 		# pos = len(self.pre_process)
