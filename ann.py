@@ -7,8 +7,8 @@ import torch.nn as nn
 import torch.nn.functional as F
 import torch.optim as optim
 from torchvision import datasets, transforms, models
-from torchviz import make_dot
-from matplotlib import pyplot as plt
+#from torchviz import make_dot
+#from matplotlib import pyplot as plt
 import pdb
 import sys
 import datetime
@@ -187,7 +187,7 @@ if __name__ == '__main__':
         
     args=parser.parse_args()
 
-    os.environ['CUDA_VISIBLE_DEVICES'] = args.devices
+    #os.environ['CUDA_VISIBLE_DEVICES'] = args.devices
 
     # Seed random number
     torch.manual_seed(args.seed)
@@ -234,8 +234,8 @@ if __name__ == '__main__':
             print('\t {:20} : {}'.format(arg, getattr(args,arg)))
         
     # Training settings
-    if torch.cuda.is_available() and args.gpu:
-        torch.set_default_tensor_type('torch.cuda.FloatTensor')
+    #if torch.cuda.is_available() and args.gpu:
+    #    torch.set_default_tensor_type('torch.cuda.FloatTensor')
     
     # Loading Dataset
     if dataset == 'CIFAR100':
