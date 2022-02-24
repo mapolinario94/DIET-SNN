@@ -47,7 +47,8 @@ class AverageMeter(object):
         return fmtstr.format(**self.__dict__)
 
 def find_threshold(batch_size=512, timesteps=2500, architecture='VGG16'):
-    
+
+
     loader = torch.utils.data.DataLoader(dataset=trainset, batch_size=batch_size, shuffle=True)
     model.module.network_update(timesteps=timesteps, leak=1.0)
     pos=0
@@ -55,7 +56,9 @@ def find_threshold(batch_size=512, timesteps=2500, architecture='VGG16'):
     
     def find(layer):
         max_act=0
-        
+        # for name, m in model.named_parameters():
+        #     print(name)
+        #     print(m.device)
         print('\n Finding threshold for layer {}'.format(layer))
         for batch_idx, (data, target) in enumerate(loader):
             
@@ -359,7 +362,7 @@ if __name__ == '__main__':
         os.mkdir(log_file)
     except OSError:
         pass 
-    identifier = 'snn_'+architecture.lower()+'_'+dataset.lower()+'_'+str(timesteps)+'_'+time.ctime(time.time())
+    identifier = 'snn_'+architecture.lower()+'_'+dataset.lower()
     log_file+=identifier+'.log'
     
     if args.log:

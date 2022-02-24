@@ -266,7 +266,7 @@ class RESNET_SNN_STDB(nn.Module):
 		for pos in range(len(self.pre_process)):
 			if isinstance(self.pre_process[pos],nn.Conv2d):
 				if thresholds:
-					self.threshold.update({'t'+str(pos): nn.Parameter(torch.tensor(thresholds.pop(0)*self.scaling_factor).to(self.threshold.device))})
+					self.threshold.update({'t'+str(pos): nn.Parameter(torch.tensor(thresholds.pop(0)*self.scaling_factor).cuda())})
 
 		pos = len(self.pre_process)
 		for i in range(1,5):
@@ -280,7 +280,7 @@ class RESNET_SNN_STDB(nn.Module):
 		for l in range(len(self.classifier)):
 			if isinstance(self.classifier[l], nn.Linear):
 				if thresholds:
-					self.threshold.update({'t'+str(pos+l): nn.Parameter(torch.tensor(thresholds.pop(0)*self.scaling_factor))})
+					self.threshold.update({'t'+str(pos+l): nn.Parameter(torch.tensor(thresholds.pop(0)*self.scaling_factor.cuda()))})
 
 		
 		# pos = len(self.pre_process)
@@ -322,13 +322,13 @@ class RESNET_SNN_STDB(nn.Module):
 		for l in range(len(self.pre_process)):
 			
 			if isinstance(self.pre_process[l], nn.Conv2d):
-				self.mem[l] = torch.zeros(self.batch_size, self.pre_process[l].out_channels, self.width, self.height)
-				self.spike[l] = torch.ones(self.mem[l].shape)*(-1000)
+				self.mem[l] = torch.zeros(self.batch_size, self.pre_process[l].out_channels, self.width, self.height).to(x.device)
+				self.spike[l] = torch.ones(self.mem[l].shape).to(x.device)*(-1000)
 				#self.register_buffer('mem[l]', torch.zeros(self.batch_size, self.pre_process[l].out_channels, self.width, self.height))
 				#self.register_buffer('spike[l]', torch.ones(self.mem[l].shape)*(-1000))
 
 			elif isinstance(self.pre_process[l], nn.Dropout):
-				self.mask[l] = self.pre_process[l](torch.ones(self.mem[l-2].shape))
+				self.mask[l] = self.pre_process[l](torch.ones(self.mem[l-2].shape)).to(x.device)
 			elif isinstance(self.pre_process[l], nn.AvgPool2d):
 				
 				self.width 	= self.width//self.pre_process[l].kernel_size
@@ -342,13 +342,13 @@ class RESNET_SNN_STDB(nn.Module):
 			for index in range(len(layer)):
 				for l in range(len(layer[index].residual)):
 					if isinstance(layer[index].residual[l],nn.Conv2d):
-						self.mem[pos] = torch.zeros(self.batch_size, layer[index].residual[l].out_channels, self.width, self.height)
-						self.spike[pos] = torch.ones(self.mem[pos].shape)*(-1000)
+						self.mem[pos] = torch.zeros(self.batch_size, layer[index].residual[l].out_channels, self.width, self.height).to(x.device)
+						self.spike[pos] = torch.ones(self.mem[pos].shape).to(x.device)*(-1000)
 						#self.register_buffer('mem[pos]', torch.zeros(self.batch_size, layer[index].residual[l].out_channels, self.width, self.height))
 						#self.register_buffer('spike[pos]', torch.ones(self.mem[pos].shape)*(-1000))
 						pos = pos + 1
 					elif isinstance(layer[index].residual[l],nn.Dropout):
-						self.mask[pos-1] = layer[index].residual[l](torch.ones(self.mem[pos-1].shape))
+						self.mask[pos-1] = layer[index].residual[l](torch.ones(self.mem[pos-1].shape)).to(x.device)
 		
 		#average pooling before final layer
 		#self.width 	= self.width//self.avgpool.kernel_size
@@ -364,10 +364,10 @@ class RESNET_SNN_STDB(nn.Module):
 
 		for l in range(len(self.classifier)):
 			if isinstance(self.classifier[l],nn.Linear):
-				self.mem[pos+l] 	= torch.zeros(self.batch_size, self.classifier[l].out_features)
-				self.spike[pos+l] 	= torch.ones(self.mem[pos+l].shape)*(-1000)
+				self.mem[pos+l] 	= torch.zeros(self.batch_size, self.classifier[l].out_features).to(x.device)
+				self.spike[pos+l] 	= torch.ones(self.mem[pos+l].shape).to(x.device)*(-1000)
 			elif isinstance(self.classifier[l], nn.Dropout):
-				self.mask[pos+l] 	= self.classifier[l](torch.ones(self.mem[pos+l-2].shape))
+				self.mask[pos+l] 	= self.classifier[l](torch.ones(self.mem[pos+l-2].shape)).to(x.device)
 
 	def percentile(self, t, q):
 		k = 1 + round(.01 * float(q) * (t.numel() - 1))
