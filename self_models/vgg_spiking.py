@@ -118,7 +118,7 @@ class VGG_SNN_STDB(nn.Module):
 		for pos in range(len(self.features)):
 			if isinstance(self.features[pos], nn.Conv2d):
 				if thresholds:
-					self.threshold.update({'t'+str(pos): nn.Parameter(torch.tensor(thresholds.pop(0)*self.scaling_factor))})
+					self.threshold.update({'t'+str(pos): nn.Parameter(torch.tensor(thresholds.pop(0)*self.scaling_factor).cuda())})
 				#print('\t Layer{} : {:.2f}'.format(pos, self.threshold[pos]))
 
 		prev = len(self.features)
@@ -126,7 +126,7 @@ class VGG_SNN_STDB(nn.Module):
 		for pos in range(len(self.classifier)-1):
 			if isinstance(self.classifier[pos], nn.Linear):
 				if thresholds:
-					self.threshold.update({'t'+str(prev+pos): nn.Parameter(torch.tensor(thresholds.pop(0)*self.scaling_factor))})
+					self.threshold.update({'t'+str(prev+pos): nn.Parameter(torch.tensor(thresholds.pop(0)*self.scaling_factor).cuda())})
 				#print('\t Layer{} : {:.2f}'.format(prev+pos, self.threshold[prev+pos]))
 
 
