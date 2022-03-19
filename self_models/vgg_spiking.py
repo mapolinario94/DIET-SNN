@@ -230,16 +230,16 @@ class VGG_SNN_STDB(nn.Module):
 		for l in range(len(self.features)):
 								
 			if isinstance(self.features[l], nn.Conv2d):
-				self.mem[l] 		= torch.zeros(self.batch_size, self.features[l].out_channels, self.width, self.height)
+				self.mem[l] 		= torch.zeros(self.batch_size, self.features[l].out_channels, self.width, self.height).to(x.device)
 			
 			elif isinstance(self.features[l], nn.ReLU):
 				if isinstance(self.features[l-1], nn.Conv2d):
-					self.spike[l] 	= torch.ones(self.mem[l-1].shape)*(-1000)
+					self.spike[l] 	= torch.ones(self.mem[l-1].shape).to(x.device)*(-1000)
 				elif isinstance(self.features[l-1], nn.AvgPool2d):
-					self.spike[l] 	= torch.ones(self.batch_size, self.features[l-2].out_channels, self.width, self.height)*(-1000)
+					self.spike[l] 	= torch.ones(self.batch_size, self.features[l-2].out_channels, self.width, self.height).to(x.device)*(-1000)
 
 			elif isinstance(self.features[l], nn.Dropout):
-				self.mask[l] = self.features[l](torch.ones(self.mem[l-2].shape).cuda())
+				self.mask[l] = self.features[l](torch.ones(self.mem[l-2].shape).to(x.device))
 
 			elif isinstance(self.features[l], nn.AvgPool2d):
 				self.width = self.width//self.features[l].kernel_size
@@ -250,13 +250,13 @@ class VGG_SNN_STDB(nn.Module):
 		for l in range(len(self.classifier)):
 			
 			if isinstance(self.classifier[l], nn.Linear):
-				self.mem[prev+l] 		= torch.zeros(self.batch_size, self.classifier[l].out_features)
+				self.mem[prev+l] 		= torch.zeros(self.batch_size, self.classifier[l].out_features).to(x.device)
 			
 			elif isinstance(self.classifier[l], nn.ReLU):
-				self.spike[prev+l] 		= torch.ones(self.mem[prev+l-1].shape)*(-1000)
+				self.spike[prev+l] 		= torch.ones(self.mem[prev+l-1].shape).to(x.device)*(-1000)
 
 			elif isinstance(self.classifier[l], nn.Dropout):
-				self.mask[prev+l] = self.classifier[l](torch.ones(self.mem[prev+l-2].shape).cuda())
+				self.mask[prev+l] = self.classifier[l](torch.ones(self.mem[prev+l-2].shape).to(x.device))
 				
 		# self.spike = copy.deepcopy(self.mem)
 		# for key, values in self.spike.items():
