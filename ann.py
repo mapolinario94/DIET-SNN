@@ -213,7 +213,7 @@ if __name__ == '__main__':
     except OSError:
         pass 
     
-    identifier = 'ann_'+architecture.lower()+'_'+dataset.lower()+'_'+time.ctime(time.time())
+    identifier = 'ann_'+architecture.lower()+'_'+dataset.lower()
     log_file+=identifier+'.log'
     
     if args.log:
