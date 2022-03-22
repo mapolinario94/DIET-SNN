@@ -132,7 +132,7 @@ class VGG(nn.Module):
             
             if x == 'A':
                 layers.pop()
-                layers += [nn.AvgPool2d(kernel_size=2, stride=2)]
+                layers += [nn.MaxPool2d(kernel_size=2, stride=2)]
             else:
                 layers += [nn.Conv2d(in_channels, x, kernel_size=self.kernel_size, padding=(self.kernel_size-1)//2, stride=stride, bias=False),
                            nn.ReLU(inplace=True)
