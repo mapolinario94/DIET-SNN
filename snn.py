@@ -132,20 +132,20 @@ def train(epoch):
         optimizer.zero_grad()
         output = model(data) 
         
-        loss = F.cross_entropy(output,target)
+        loss = F.cross_entropy(output, target)
         #make_dot(loss).view()
         loss.backward()
         optimizer.step()       
         #pdb.set_trace()
         #optimizer.load_state_dict(optimizer.state_dict())
-        pred = output.max(1,keepdim=True)[1]
+        pred = output.max(1, keepdim=True)[1]
         correct = pred.eq(target.data.view_as(pred)).cpu().sum()
         
         for key, value in model.module.leak.items():
             # maximum of leak=1.0
-            model.module.leak[key].data.clamp_(max=1.0)
+            model.module.leak[key].data.clamp_(min=0.0, max=1.0)
 
-        losses.update(loss.item(),data.size(0))
+        losses.update(loss.item(), data.size(0))
         top1.update(correct.item()/data.size(0), data.size(0))
                 
         if (batch_idx+1) % train_acc_batches == 0:
