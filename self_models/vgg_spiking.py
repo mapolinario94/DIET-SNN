@@ -142,7 +142,7 @@ class VGG_SNN_STDB(nn.Module):
 						
 			if x == 'A':
 				layers.pop()
-				layers += [nn.MaxPool2d(kernel_size=2, stride=2)]
+				layers += [nn.AvgPool2d(kernel_size=2, stride=2)]
 			
 			else:
 				layers += [nn.Conv2d(in_channels, x, kernel_size=self.kernel_size, padding=(self.kernel_size-1)//2, stride=stride, bias=False),
@@ -241,7 +241,7 @@ class VGG_SNN_STDB(nn.Module):
 			elif isinstance(self.features[l], nn.Dropout):
 				self.mask[l] = self.features[l](torch.ones(self.mem[l-2].shape).to(x.device))
 
-			elif isinstance(self.features[l], nn.MaxPool2d):
+			elif isinstance(self.features[l], nn.AvgPool2d):
 				self.width = self.width//self.features[l].kernel_size
 				self.height = self.height//self.features[l].kernel_size
 		
@@ -307,7 +307,7 @@ class VGG_SNN_STDB(nn.Module):
 						self.spike[l] 	= self.spike[l].masked_fill(out.bool(),t-1)
 						out_prev  		= out.clone()
 
-				elif isinstance(self.features[l], nn.MaxPool2d):
+				elif isinstance(self.features[l], nn.AvgPool2d):
 					out_prev 		= self.features[l](out_prev)
 				
 				elif isinstance(self.features[l], nn.Dropout):
