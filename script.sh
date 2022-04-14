@@ -6,7 +6,7 @@ python ann.py --dataset CIFAR100 --batch_size 64 --architecture VGG16 --learning
 
 export CUDA_VISIBLE_DEVICES=0
 
-python snn.py --dataset CIFAR100 --batch_size 64 --architecture VGG16 --learning_rate 1e-4 --optimizer 'Adam' --epochs 100 --timesteps 5 --scaling_factor 0.6 --weight_decay 0 --dropout 0.1 --train_acc_batches 500 --default_threshold 1.0 --pretrained_ann ./trained_models/ann/ann_vgg16_cifar100.pth --log --activation Linear --leak 1.0 --alpha 0.3 --beta 0.01
+python snn.py --dataset CIFAR100 --batch_size 64 --architecture VGG16 --learning_rate 1e-4 --optimizer 'Adam' --epochs 300 --timesteps 5 --scaling_factor 0.6 --weight_decay 0 --dropout 0.1 --train_acc_batches 1000 --default_threshold 1.0 --pretrained_ann ./trained_models/ann/ann_vgg16_cifar100.pth --log --activation Linear --leak 1.0 --alpha 0.3 --beta 0.01
 
 python snn.py --dataset CIFAR10 --batch_size 64 --architecture VGG16 --learning_rate 1e-4 --optimizer 'Adam' --epochs 100 --timesteps 5 --scaling_factor 0.6 --weight_decay 0 --dropout 0.1 --train_acc_batches 500 --default_threshold 1.0 --pretrained_ann ./trained_models/ann/ann_vgg16_cifar10.pth --log --activation Linear --leak 1.0 --alpha 0.3 --beta 0.01
 

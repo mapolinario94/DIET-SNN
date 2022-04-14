@@ -235,7 +235,7 @@ class VGG_SNN_STDB(nn.Module):
 			elif isinstance(self.features[l], nn.ReLU):
 				if isinstance(self.features[l-1], nn.Conv2d):
 					self.spike[l] 	= torch.ones(self.mem[l-1].shape).to(x.device)*(-1000)
-				elif isinstance(self.features[l-1], nn.MaxPool2d):
+				elif isinstance(self.features[l-1], nn.AvgPool2d):
 					self.spike[l] 	= torch.ones(self.batch_size, self.features[l-2].out_channels, self.width, self.height).to(x.device)*(-1000)
 
 			elif isinstance(self.features[l], nn.Dropout):
